@@ -31,24 +31,24 @@ local function AddToFavorites(name, id)
         local PlayButton = TabFavorites:CreateButton({
             Name = name .. " (ID: " .. id .. ")",
             Callback = function()
-                previewSound:Stop()
-                previewSound.SoundId = "rbxassetid://" .. id
-                previewSound:Play()
+                if Favorites[id] then
+                    previewSound:Stop()
+                    previewSound.SoundId = "rbxassetid://" .. id
+                    previewSound:Play()
+                end
             end,
         })
 
         local UnfavButton = TabFavorites:CreateButton({
-            Name = "Remove Favorite: " .. id,
+            Name = "Unfavorite This Audio",
             Callback = function()
-                Favorites[id] = nil
-                -- Note: If Destroy() fails in your Rayfield version, 
-                -- the entry remains until the script is reloaded.
-                pcall(function()
-                    PlayButton:Destroy()
-                    UnfavButton:Destroy()
-                    FavSection:Destroy()
-                end)
-                Rayfield:Notify({Title = "Favorites", Content = "Item removed", Duration = 1.5})
+                if Favorites[id] then
+                    Favorites[id] = nil
+                    -- Changes the name since Rayfield buttons cannot be destroyed
+                    PlayButton:Set("Removed from Favorites")
+                    UnfavButton:Set("Deleted")
+                    Rayfield:Notify({Title = "Favorites", Content = "Audio removed from list", Duration = 1.5})
+                end
             end,
         })
         
